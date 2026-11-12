@@ -1,0 +1,141 @@
+{
+    "project": "DiaTrust-NX",
+    "title": "Adaptive Neuro-Ensemble Framework for Explainable, Calibrated and Uncertainty-Aware Diabetes Risk Prediction",
+    "seed": 42,
+    "datasets": {
+        "Early Stage": {
+            "rows": 520,
+            "features": 16,
+            "unique_profiles": 251,
+            "selected_model": "Logistic Regression",
+            "threshold": 0.16818181818181818,
+            "training": {
+                "Accuracy": 0.8757225433526011,
+                "Balanced Accuracy": 0.8468177485968442,
+                "Precision": 0.8483606557377049,
+                "Recall": 0.971830985915493,
+                "Sensitivity": 0.971830985915493,
+                "Specificity": 0.7218045112781954,
+                "F1": 0.9059080962800875,
+                "ROC-AUC": 0.9789967877440079,
+                "PR-AUC": 0.9887522899553964,
+                "Brier Score": 0.05676970230390575,
+                "Threshold": 0.16818181818181818,
+                "Confusion Matrix": {
+                    "TN": 96,
+                    "FP": 37,
+                    "FN": 6,
+                    "TP": 207
+                }
+            },
+            "validation": {
+                "Accuracy": 0.9770114942528736,
+                "Balanced Accuracy": 0.9705882352941176,
+                "Precision": 0.9636363636363636,
+                "Recall": 1.0,
+                "Sensitivity": 1.0,
+                "Specificity": 0.9411764705882353,
+                "F1": 0.9814814814814815,
+                "ROC-AUC": 0.9844617092119866,
+                "PR-AUC": 0.9889644757279221,
+                "Brier Score": 0.07287138506135982,
+                "Threshold": 0.16818181818181818,
+                "Confusion Matrix": {
+                    "TN": 32,
+                    "FP": 2,
+                    "FN": 0,
+                    "TP": 53
+                }
+            },
+            "test": {
+                "Accuracy": 0.9655172413793104,
+                "Balanced Accuracy": 0.9722222222222222,
+                "Precision": 1.0,
+                "Recall": 0.9444444444444444,
+                "Sensitivity": 0.9444444444444444,
+                "Specificity": 1.0,
+                "F1": 0.9714285714285714,
+                "ROC-AUC": 0.9927048260381593,
+                "PR-AUC": 0.9958727596022677,
+                "Brier Score": 0.07378896250352632,
+                "Threshold": 0.16818181818181818,
+                "Confusion Matrix": {
+                    "TN": 33,
+                    "FP": 0,
+                    "FN": 3,
+                    "TP": 51
+                }
+            }
+        },
+        "CDC": {
+            "rows": 253680,
+            "features": 21,
+            "unique_profiles": 227908,
+            "selected_model": "CatBoost",
+            "threshold": 0.5136363636363637,
+            "training": {
+                "Accuracy": 0.7323560917855331,
+                "Balanced Accuracy": 0.757863917550005,
+                "Precision": 0.3166623644811564,
+                "Recall": 0.7932428063368897,
+                "Sensitivity": 0.7932428063368897,
+                "Specificity": 0.7224850287631203,
+                "F1": 0.45263352089290654,
+                "ROC-AUC": 0.835942192111801,
+                "PR-AUC": 0.44605930921952175,
+                "Brier Score": 0.1737151119827257,
+                "Threshold": 0.5136363636363637,
+                "Confusion Matrix": {
+                    "TN": 110270,
+                    "FP": 42356,
+                    "FN": 5116,
+                    "TP": 19628
+                }
+            },
+            "validation": {
+                "Accuracy": 0.7292754999736162,
+                "Balanced Accuracy": 0.7541653073230086,
+                "Precision": 0.31361213304302127,
+                "Recall": 0.7887084592145015,
+                "Sensitivity": 0.7887084592145015,
+                "Specificity": 0.7196221554315156,
+                "F1": 0.4487778673113081,
+                "ROC-AUC": 0.831793143112318,
+                "PR-AUC": 0.4366498160782585,
+                "Brier Score": 0.17565983241531832,
+                "Threshold": 0.5136363636363637,
+                "Confusion Matrix": {
+                    "TN": 23464,
+                    "FP": 9142,
+                    "FN": 1119,
+                    "TP": 4177
+                }
+            },
+            "test": {
+                "Accuracy": 0.7305509268902312,
+                "Balanced Accuracy": 0.7542653687150452,
+                "Precision": 0.31175811870100784,
+                "Recall": 0.787033546928006,
+                "Sensitivity": 0.787033546928006,
+                "Specificity": 0.7214971905020845,
+                "F1": 0.44660713330837926,
+                "ROC-AUC": 0.8336349772509797,
+                "PR-AUC": 0.4343980976846349,
+                "Brier Score": 0.1734509138003026,
+                "Threshold": 0.5136363636363637,
+                "Confusion Matrix": {
+                    "TN": 23883,
+                    "FP": 9219,
+                    "FN": 1130,
+                    "TP": 4176
+                }
+            }
+        }
+    },
+    "evaluation": "Exact duplicate feature profiles were isolated into discrete groups. Zero feature profile leakage across Train, Validation, and Test splits. Thresholds and calibrations were selected using validation data only.",
+    "clinical_findings": {
+        "Early Stage": "Polyuria and Polydipsia are the predominant cardinal markers. Age and gender interactions further refine precision.",
+        "CDC": "HighBP, HighChol, BMI, and GenHlth are the strongest predictors. Threshold optimization increased positive recall from 58.18% to 78.70% without synthetic manipulation."
+    },
+    "medical_notice": "Research prototype only. Not a clinically validated diagnostic tool."
+}

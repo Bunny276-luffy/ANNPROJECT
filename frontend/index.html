@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiaTrust-NX | Advanced Diabetes Risk Prediction & Research Dashboard</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="app-header">
+    <div class="brand-container" data-navigate="home">
+      <div class="brand-logo">NX</div>
+      <div class="brand-text">
+        <h1>DiaTrust-NX</h1>
+        <span>Clinical AI Research System</span>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li class="nav-item active" data-view="home">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </li>
+      <li class="nav-item" data-view="early-stage">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Early Stage
+      </li>
+      <li class="nav-item" data-view="cdc">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        CDC Screening
+      </li>
+      <li class="nav-item" data-view="results">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Results
+      </li>
+      <li class="nav-item" data-view="xai">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Explainable AI
+      </li>
+      <li class="nav-item" data-view="benchmarks">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Benchmarks
+      </li>
+      <li class="nav-item" data-view="about">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        About
+      </li>
+    </ul>
+
+    <div class="header-status">
+      <div class="status-dot" id="system-status-indicator"></div>
+      <span id="system-status-text">Connecting...</span>
+    </div>
+  </header>
+
+  <!-- Mandatory Medical Disclaimer Banner -->
+  <aside class="disclaimer-banner">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></aside>
+    <span><strong>RESEARCH PROTOTYPE NOTICE:</strong> DiaTrust-NX is strictly an AI/ML research system and is NOT a certified clinical diagnostic device. Laboratory glucose confirmation is mandatory.</span>
+  </div>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- ===================================================== -->
+    <!-- VIEW 1: HOME DASHBOARD                                -->
+    <!-- ===================================================== -->
+    <section class="page-view active" id="view-home">
+      <div class="page-header">
+        <h2 class="page-title">
+          DiaTrust-NX Clinical AI Research Platform
+          <span class="page-badge badge-emerald">Version 2.0</span>
+        </h2>
+        <p class="page-desc">
+          Duplicate-aware, zero-leakage machine learning system for precision diabetes risk estimation across acute outpatient symptom presentations and population-scale chronic disease screening.
+        </p>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="dashboard-grid">
+        <!-- Early Stage Metric Card -->
+        <div class="card card-glow-emerald">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              Early Stage Risk Assessment
+            </span>
+            <span class="page-badge badge-emerald">UCI 529</span>
+          </div>
+          <div class="card-metric-value" style="color: var(--accent-emerald);">96.55%</div>
+          <div class="card-metric-sub">Test Accuracy • ROC-AUC 0.9927 • Specificity 100%</div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.75rem;">
+            Screening across 16 acute clinical symptoms with engineered interaction features (Classic Triad, Symptom burden). Zero duplicate profile leakage.
+          </p>
+          <div class="metrics-row">
+            <div class="metric-item-small">
+              <div class="val">94.4%</div>
+              <div class="label">Recall</div>
+            </div>
+            <div class="metric-item-small">
+              <div class="val">100.0%</div>
+              <div class="label">Precision</div>
+            </div>
+            <div class="metric-item-small">
+              <div class="val">0.971</div>
+              <div class="label">F1-Score</div>
+            </div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%;" data-navigate="early-stage">
+              Start Early Stage Assessment →
+            </button>
+          </div>
+        </div>
+
+        <!-- CDC Metric Card -->
+        <div class="card card-glow-cyan">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              CDC Population Screening
+            </span>
+            <span class="page-badge badge-cyan">UCI 891</span>
+          </div>
+          <div class="card-metric-value" style="color: var(--accent-cyan);">78.70%</div>
+          <div class="card-metric-sub">Sensitivity (Recall) • +20.52% vs Previous Baseline</div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.75rem;">
+            Trained on 253,680 CDC BRFSS survey respondents with class-weighted CatBoost and validation-optimized thresholding ($\tau = 0.5136$).
+          </p>
+          <div class="metrics-row">
+            <div class="metric-item-small">
+              <div class="val">75.4%</div>
+              <div class="label">Bal Acc</div>
+            </div>
+            <div class="metric-item-small">
+              <div class="val">0.834</div>
+              <div class="label">ROC-AUC</div>
+            </div>
+            <div class="metric-item-small">
+              <div class="val">0.174</div>
+              <div class="label">Brier Score</div>
+            </div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-cyan" style="width: 100%;" data-navigate="cdc">
+              Start CDC Screening →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Platform Navigation Cards -->
+      <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+        <div class="card" style="cursor: pointer;" data-navigate="xai">
+          <h4 class="card-title" style="color: var(--accent-cyan); font-size: 1rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83"/></svg>
+            Explainable AI (XAI)
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.4rem;">
+            Explore TreeSHAP beeswarm distributions, permutation importances, and feature interaction mechanics.
+          </p>
+        </div>
+
+        <div class="card" style="cursor: pointer;" data-navigate="benchmarks">
+          <h4 class="card-title" style="color: var(--accent-emerald); font-size: 1rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Model Benchmarks
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.4rem;">
+            Review comparative metrics for all 14 classical models and the 8 PyTorch ANN deep architectures.
+          </p>
+        </div>
+
+        <div class="card" style="cursor: pointer;" data-navigate="about">
+          <h4 class="card-title" style="color: #ffffff; font-size: 1rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg>
+            Research Methodology
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.4rem;">
+            Audit the mathematical proof of stratified profile grouping and data leakage elimination.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- VIEW 2: EARLY STAGE ASSESSMENT FORM                   -->
+    <!-- ===================================================== -->
+    <section class="page-view" id="view-early-stage">
+      <div class="page-header">
+        <h2 class="page-title">
+          Early Stage Diabetes Risk Assessment
+          <span class="page-badge badge-emerald">UCI ID 529</span>
+        </h2>
+        <p class="page-desc">
+          Evaluates 16 acute clinical symptoms using the validated regularized linear model. Calibrated threshold applied ($\tau = 0.1682$).
+        </p>
+      </div>
+
+      <!-- Quick Prefill Demo Buttons -->
+      <div class="preset-bar">
+        <span class="preset-title">1-Click Clinical Demo Cases:</span>
+        <button type="button" class="btn-preset" data-preset-es="high_risk">Acute Presentation (High Risk)</button>
+        <button type="button" class="btn-preset" data-preset-es="low_risk">Healthy Control (Low Risk)</button>
+        <button type="button" class="btn-preset" data-preset-es="borderline">Borderline / Atypical Profile</button>
+      </div>
+
+      <form id="form-early-stage" class="form-section">
+        <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.25rem;">1. Patient Demographics & Baseline</h3>
+        <div class="form-grid" style="margin-bottom: 2rem;">
+          <div class="form-group">
+            <label class="form-label">Patient Age (Years)</label>
+            <input type="number" id="es-age" name="age" class="form-input" min="1" max="120" value="45" required>
+            <span class="form-desc">Range: 1 – 120 years</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Biological Sex</label>
+            <div class="toggle-group">
+              <input type="hidden" name="gender" value="Male">
+              <div class="toggle-option active" data-val="Male">Male</div>
+              <div class="toggle-option" data-val="Female">Female</div>
+            </div>
+            <span class="form-desc">Impacts baseline symptom thresholds</span>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          2. Cardinal Triad Symptoms
+          <span style="font-size: 0.72rem; color: #fbbf24; background: rgba(245, 158, 11, 0.15); padding: 0.2rem 0.5rem; border-radius: var(--radius-sm);">High Clinical Specificity</span>
+        </h3>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1.25rem;">The classic presentation triad reflects active osmotic diuresis and cellular energy starvation.</p>
+        
+        <div class="form-grid" style="margin-bottom: 2rem;">
+          <div class="form-group">
+            <label class="form-label">Polyuria (Excessive Urination)</label>
+            <div class="toggle-group">
+              <input type="hidden" name="polyuria" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Polydipsia (Excessive Thirst)</label>
+            <div class="toggle-group">
+              <input type="hidden" name="polydipsia" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Sudden Weight Loss</label>
+            <div class="toggle-group">
+              <input type="hidden" name="sudden_weight_loss" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.25rem;">3. Secondary Clinical Complaints</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Generalized Weakness / Fatigue</label>
+            <div class="toggle-group">
+              <input type="hidden" name="weakness" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Polyphagia (Excessive Hunger)</label>
+            <div class="toggle-group">
+              <input type="hidden" name="polyphagia" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Genital Thrush / Candidiasis</label>
+            <div class="toggle-group">
+              <input type="hidden" name="genital_thrush" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Visual Blurring</label>
+            <div class="toggle-group">
+              <input type="hidden" name="visual_blurring" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Severe Itching (Pruritus)</label>
+            <div class="toggle-group">
+              <input type="hidden" name="itching" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mood Irritability</label>
+            <div class="toggle-group">
+              <input type="hidden" name="irritability" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Delayed Wound Healing</label>
+            <div class="toggle-group">
+              <input type="hidden" name="delayed_healing" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Partial Paresis / Weakness</label>
+            <div class="toggle-group">
+              <input type="hidden" name="partial_paresis" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Muscle Stiffness</label>
+            <div class="toggle-group">
+              <input type="hidden" name="muscle_stiffness" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Alopecia (Hair Loss)</label>
+            <div class="toggle-group">
+              <input type="hidden" name="alopecia" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Clinical Obesity</label>
+            <div class="toggle-group">
+              <input type="hidden" name="obesity" value="No">
+              <div class="toggle-option active-no" data-val="No">No</div>
+              <div class="toggle-option" data-val="Yes">Yes</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+          <button type="reset" class="btn btn-outline">Reset All Fields</button>
+          <button type="submit" class="btn btn-primary">
+            <span>Assess Early-Stage Risk</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- VIEW 3: CDC HEALTH INDICATOR ASSESSMENT FORM          -->
+    <!-- ===================================================== -->
+    <section class="page-view" id="view-cdc">
+      <div class="page-header">
+        <h2 class="page-title">
+          CDC Chronic Disease Risk Screening
+          <span class="page-badge badge-cyan">UCI ID 891</span>
+        </h2>
+        <p class="page-desc">
+          Evaluates 21 cardiometabolic, behavioral, and demographic markers from the CDC BRFSS cohort. Tuned for high clinical sensitivity (78.70% recall).
+        </p>
+      </div>
+
+      <!-- Quick Prefill Demo Buttons -->
+      <div class="preset-bar">
+        <span class="preset-title">1-Click Population Demo Cases:</span>
+        <button type="button" class="btn-preset" data-preset-cdc="high_risk">Metabolic Syndrome (High Risk)</button>
+        <button type="button" class="btn-preset" data-preset-cdc="low_risk">Young Active Adult (Low Risk)</button>
+        <button type="button" class="btn-preset" data-preset-cdc="borderline">Pre-diabetic Alert Profile</button>
+      </div>
+
+      <form id="form-cdc" class="form-section">
+        <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.25rem;">1. Cardiometabolic & Clinical History</h3>
+        <div class="form-grid" style="margin-bottom: 2rem;">
+          <div class="form-group">
+            <label class="form-label">High Blood Pressure</label>
+            <div class="toggle-group">
+              <input type="hidden" name="HighBP" value="0">
+              <div class="toggle-option active-no" data-val="0">No</div>
+              <div class="toggle-option" data-val="1">Yes</div>
+            </div>
+            <span class="form-desc">Diagnosed hypertension</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">High Cholesterol</label>
+            <div class="toggle-group">
+              <input type="hidden" name="HighChol" value="0">
+              <div class="toggle-option active-no" data-val="0">No</div>
+              <div class="toggle-option" data-val="1">Yes</div>
+            </div>
+            <span class="form-desc">Diagnosed hyperlipidemia</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Cholesterol Checked in 5 Years</label>
+            <div class="toggle-group">
+              <input type="hidden" name="CholCheck" value="1">
+              <div class="toggle-option" data-val="0">No</div>
+              <div class="toggle-option active" data-val="1">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">History of Coronary Heart Disease / MI</label>
+            <div class="toggle-group">
+              <input type="hidden" name="HeartDiseaseorAttack" value="0">
+              <div class="toggle-option active-no" data-val="0">No</div>
+              <div class="toggle-option" data-val="1">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">History of Stroke</label>
+            <div class="toggle-group">
+              <input type="hidden" name="Stroke" value="0">
+              <div class="toggle-option active-no" data-val="0">No</div>
+              <div class="toggle-option" data-val="1">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Difficulty Walking or Climbing Stairs</label>
+            <div class="toggle-group">
+              <input type="hidden" name="DiffWalk" value="0">
+              <div class="toggle-option active-no" data-val="0">No</div>
+              <div class="toggle-option" data-val="1">Yes</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.25rem;">2. Anthropometric & General Health</h3>
+        <div class="form-grid" style="margin-bottom: 2rem;">
+          <div class="form-group">
+            <label class="form-label">Body Mass Index (BMI)</label>
+            <input type="number" step="0.1" name="BMI" class="form-input" min="10" max="100" value="26.5" required>
+            <span class="form-desc">kg/m² (Normal: 18.5–24.9, Obese: ≥30.0)</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">General Health Rating</label>
+            <select name="GenHlth" class="form-select">
+              <option value="1">1 — Excellent</option>
+              <option value="2">2 — Very Good</option>
+              <option value="3" selected>3 — Good</option>
+              <option value="4">4 — Fair</option>
+              <option value="5">5 — Poor</option>
+            </select>
+            <span class="form-desc">Self-reported general state of health</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Poor Physical Health Days (Past 30)</label>
+            <input type="number" name="PhysHlth" class="form-input" min="0" max="30" value="2" required>
+            <span class="form-desc">Days impaired by illness or injury</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Poor Mental Health Days (Past 30)</label>
+            <input type="number" name="MentHlth" class="form-input" min="0" max="30" value="2" required>
+            <span class="form-desc">Days impacted by stress, depression, mood</span>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.25rem;">3. Lifestyle & Behavioral Factors</h3>
+        <div class="form-grid" style="margin-bottom: 2rem;">
+          <div class="form-group">
+            <label class="form-label">Physical Activity (Past 30 Days)</label>
+            <div class="toggle-group">
+              <input type="hidden" name="PhysActivity" value="1">
+              <div class="toggle-option" data-val="0">No</div>
+              <div class="toggle-option active" data-val="1">Yes</div>
+            </div>
+            <span class="form-desc">Regular exercise outside work</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Smoked 100+ Cigarettes Lifetime</label>
+            <div class="toggle-group">
+              <input type="hidden" name="Smoker" value="0">
+              <div class="toggle-option active-no" data-val="0">No</div>
+              <div class="toggle-option" data-val="1">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Daily Fruit Consumption</label>
+            <div class="toggle-group">
+              <input type="hidden" name="Fruits" value="1">
+              <div class="toggle-option" data-val="0">No</div>
+              <div class="toggle-option active" data-val="1">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Daily Vegetable Consumption</label>
+            <div class="toggle-group">
+              <input type="hidden" name="Veggies" value="1">
+              <div class="toggle-option" data-val="0">No</div>
+              <div class="toggle-option active" data-val="1">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Heavy Alcohol Consumption</label>
+            <div class="toggle-group">
+              <input type="hidden" name="HvyAlcoholConsump" value="0">
+              <div class="toggle-option active-no" data-val="0">No</div>
+              <div class="toggle-option" data-val="1">Yes</div>
+            </div>
+            <span class="form-desc">Men >14 drinks/wk, Women >7 drinks/wk</span>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.25rem;">4. Demographics & Healthcare Access</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Sex</label>
+            <div class="toggle-group">
+              <input type="hidden" name="Sex" value="1">
+              <div class="toggle-option active" data-val="1">Male</div>
+              <div class="toggle-option" data-val="0">Female</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Age Bracket</label>
+            <select name="Age" class="form-select">
+              <option value="1">18–24 years (Age 1)</option>
+              <option value="2">25–29 years (Age 2)</option>
+              <option value="3">30–34 years (Age 3)</option>
+              <option value="4">35–39 years (Age 4)</option>
+              <option value="5">40–44 years (Age 5)</option>
+              <option value="6">45–49 years (Age 6)</option>
+              <option value="7">50–54 years (Age 7)</option>
+              <option value="8">55–59 years (Age 8)</option>
+              <option value="9" selected>60–64 years (Age 9)</option>
+              <option value="10">65–69 years (Age 10)</option>
+              <option value="11">70–74 years (Age 11)</option>
+              <option value="12">75–79 years (Age 12)</option>
+              <option value="13">80+ years (Age 13)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Has Healthcare Coverage</label>
+            <div class="toggle-group">
+              <input type="hidden" name="AnyHealthcare" value="1">
+              <div class="toggle-option" data-val="0">No</div>
+              <div class="toggle-option active" data-val="1">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Could Not Afford Doctor (Past 12M)</label>
+            <div class="toggle-group">
+              <input type="hidden" name="NoDocbcCost" value="0">
+              <div class="toggle-option active-no" data-val="0">No</div>
+              <div class="toggle-option" data-val="1">Yes</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Education Level</label>
+            <select name="Education" class="form-select">
+              <option value="1">1 — Never attended school</option>
+              <option value="2">2 — Elementary (grades 1–8)</option>
+              <option value="3">3 — Some high school</option>
+              <option value="4">4 — High school graduate</option>
+              <option value="5" selected>5 — Some college / technical school</option>
+              <option value="6">6 — College 4+ years (Degree)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Household Income Scale</label>
+            <select name="Income" class="form-select">
+              <option value="1">1 — Less than $10,000</option>
+              <option value="2">2 — $10,000 to $15,000</option>
+              <option value="3">3 — $15,000 to $20,000</option>
+              <option value="4">4 — $20,000 to $25,000</option>
+              <option value="5">5 — $25,000 to $35,000</option>
+              <option value="6" selected>6 — $35,000 to $50,000</option>
+              <option value="7">7 — $50,000 to $75,000</option>
+              <option value="8">8 — $75,000 or greater</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+          <button type="reset" class="btn btn-outline">Reset All Fields</button>
+          <button type="submit" class="btn btn-cyan">
+            <span>Assess CDC Population Risk</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- VIEW 4: PREDICTION RESULTS                            -->
+    <!-- ===================================================== -->
+    <section class="page-view" id="view-results">
+      <div class="page-header">
+        <h2 class="page-title">
+          Clinical Prediction Results
+          <span class="page-badge badge-emerald">Model Inference</span>
+        </h2>
+        <p class="page-desc">
+          Live model risk estimation with calibrated probabilities, decision threshold classification, and uncertainty quantification.
+        </p>
+      </div>
+
+      <div class="result-card">
+        <!-- Radial Gauge -->
+        <div class="gauge-container">
+          <svg class="gauge-svg" viewBox="0 0 200 200">
+            <circle class="gauge-bg" cx="100" cy="100" r="80"></circle>
+            <circle class="gauge-progress" id="res-gauge-progress" cx="100" cy="100" r="80" style="stroke-dasharray: 502; stroke-dashoffset: 502;"></circle>
+          </svg>
+          <div class="gauge-text">
+            <div class="gauge-percent" id="res-gauge-percent">0%</div>
+            <div class="gauge-label">Risk Probability</div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <div class="risk-badge" id="res-risk-badge">Awaiting Assessment</div>
+          <div style="font-size: 0.88rem; color: var(--text-secondary); display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+            <div>Dataset: <strong id="res-dataset-name" style="color: var(--text-main);">—</strong></div>
+            <div>Model: <strong id="res-model-name" style="color: var(--text-main);">—</strong></div>
+            <div>Threshold: <strong id="res-threshold" style="color: var(--text-main);">—</strong></div>
+            <div>Uncertainty: <strong id="res-uncertainty" style="color: var(--text-main);">—</strong></div>
+          </div>
+        </div>
+
+        <!-- Clinical Action Guidance -->
+        <div id="res-clinical-advice" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; font-size: 0.9rem; line-height: 1.6; margin-bottom: 2rem;">
+          Submit an assessment from the Early Stage or CDC forms to view patient-specific risk estimation.
+        </div>
+
+        <!-- Factor Contributions -->
+        <div>
+          <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.5rem;">Primary Contributing Factors</h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Identified localized factors influencing the risk probability for this patient profile:
+          </p>
+          <ul class="factor-list" id="res-factor-list">
+            <li class="factor-item">
+              <span class="factor-name">Awaiting evaluation...</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Action Links -->
+        <div style="margin-top: 2.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-outline" data-navigate="early-stage">Assess Another Patient</button>
+          <button class="btn btn-cyan" data-navigate="xai">Inspect in Explainable AI →</button>
+          <button class="btn btn-primary" data-navigate="benchmarks">View Benchmark Proofs →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- VIEW 5: EXPLAINABLE AI (XAI) DASHBOARD                -->
+    <!-- ===================================================== -->
+    <section class="page-view" id="view-xai">
+      <div class="page-header">
+        <h2 class="page-title">
+          Explainable AI (XAI) & Feature Attributions
+          <span class="page-badge badge-cyan">SHAP & Permutation</span>
+        </h2>
+        <p class="page-desc">
+          Inspect how individual features drive predictive decisions globally across cohorts and locally for individual patient instances.
+        </p>
+      </div>
+
+      <!-- Dataset Selector Bar -->
+      <div class="preset-bar">
+        <span class="preset-title">Select Diagnostic Context:</span>
+        <button type="button" class="btn-preset active" data-xai-tab="early_stage">Early Stage (UCI 529)</button>
+        <button type="button" class="btn-preset" data-xai-tab="cdc">CDC Survey (UCI 891)</button>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <h3 id="xai-dataset-heading" style="font-size: 1.3rem; color: var(--text-main);">UCI Early Stage (529) — Feature Attributions</h3>
+        <span id="xai-model-tag" class="page-badge badge-emerald" style="margin-top: 0.25rem; display: inline-block;">Model: Regularized Logistic Regression</span>
+      </div>
+
+      <!-- Plots Grid -->
+      <div class="plots-grid">
+        <div class="plot-card">
+          <div class="plot-card-header">
+            <span>Global SHAP Beeswarm Distribution</span>
+            <span style="font-size: 0.72rem; color: var(--accent-cyan);">Impact on Log-Odds</span>
+          </div>
+          <img id="xai-shap-img" class="plot-img" src="/plots/early_stage_shap_summary.png" alt="SHAP Summary Plot">
+        </div>
+
+        <div class="plot-card">
+          <div class="plot-card-header">
+            <span>Feature Importance Ranking</span>
+            <span style="font-size: 0.72rem; color: var(--accent-emerald);">Mean |SHAP| / Permutation</span>
+          </div>
+          <img id="xai-feat-img" class="plot-img" src="/plots/early_stage_feature_importance.png" alt="Feature Importance Plot">
+        </div>
+      </div>
+
+      <!-- Feature Table -->
+      <div class="card" style="margin-top: 2rem;">
+        <h3 class="card-title" style="margin-bottom: 0.5rem;">Clinical Feature Differentiators</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          Ranked order of features contributing to model risk discrimination:
+        </p>
+        <div class="table-responsive">
+          <table class="benchmark-table">
+            <thead>
+              <tr>
+                <th style="width: 80px;">Rank</th>
+                <th>Feature Name</th>
+                <th>Importance / Weight</th>
+                <th>Clinical Physiological Mechanism</th>
+              </tr>
+            </thead>
+            <tbody id="xai-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- VIEW 6: MODEL PERFORMANCE BENCHMARKS                  -->
+    <!-- ===================================================== -->
+    <section class="page-view" id="view-benchmarks">
+      <div class="page-header">
+        <h2 class="page-title">
+          Model Performance Benchmarks & Verifications
+          <span class="page-badge badge-emerald">Empirical Proof</span>
+        </h2>
+        <p class="page-desc">
+          Compare classical ML models, ensemble methods, and 8 deep neural network architectures under strict zero-leakage duplicate profile isolation.
+        </p>
+      </div>
+
+      <!-- Benchmark Tabs -->
+      <div class="preset-bar">
+        <span class="preset-title">Select Benchmark Suite:</span>
+        <button type="button" class="btn-preset active" data-bench-tab="early_stage">Early Stage (14 Models)</button>
+        <button type="button" class="btn-preset" data-bench-tab="cdc">CDC Survey (11 Models)</button>
+        <button type="button" class="btn-preset" data-bench-tab="ann">8 PyTorch ANNs Benchmark</button>
+      </div>
+
+      <!-- Dynamic Content Injection Container -->
+      <div id="bench-content-container">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- VIEW 7: ABOUT DIATRUST-NX                             -->
+    <!-- ===================================================== -->
+    <section class="page-view" id="view-about">
+      <div class="page-header">
+        <h2 class="page-title">
+          About DiaTrust-NX
+          <span class="page-badge badge-cyan">Architecture & Research</span>
+        </h2>
+        <p class="page-desc">
+          Technical specifications, duplicate-profile grouping formulation, dataset provenance, and clinical regulatory notices.
+        </p>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3 class="card-title" style="color: var(--accent-emerald); margin-bottom: 0.75rem;">
+            1. The Duplicate Profile Leakage Problem
+          </h3>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+            Survey and questionnaire medical datasets naturally have patients with identical feature combinations. In UCI 529, <strong>72.3% of rows (376/520)</strong> are duplicate predictor profiles.
+            Standard randomized splitting puts identical profiles into both train and test splits, leading to artificial score inflation (>92.8%).
+          </p>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0.75rem;">
+            DiaTrust-NX uses deterministic profile group hashing:
+            $$\forall x_i \in \text{Test}, \quad \nexists x_j \in \text{Train} \cup \text{Val} \quad \text{such that } x_i = x_j$$
+            This strictly prevents memorization and tests true generalization to unseen phenotypes.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title" style="color: var(--accent-cyan); margin-bottom: 0.75rem;">
+            2. The CDC Class Imbalance Breakthrough
+          </h3>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+            In the CDC BRFSS population (253,680 records), positive diabetes incidence is only 13.9%. The legacy baseline suffered an unacceptably low recall of <strong>58.18%</strong>, missing over 41% of diabetic individuals.
+          </p>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0.75rem;">
+            By integrating balanced loss weighting with validation-optimized thresholding ($\tau = 0.5136$), DiaTrust-NX achieves <strong>78.70% recall (+20.52% gain)</strong>, capturing nearly 8 out of 10 diabetic cases on unseen test data.
+          </p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 1.5rem;">
+        <h3 class="card-title" style="margin-bottom: 0.75rem;">System Architecture & MLOps Stack</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+          <div>
+            <strong style="color: var(--text-main);">Backend:</strong> FastAPI, Python 3.14+, Pydantic v2
+          </div>
+          <div>
+            <strong style="color: var(--text-main);">ML / Ensemble:</strong> scikit-learn 1.9+, CatBoost 1.2+, LightGBM 4.7+, XGBoost 3.4+
+          </div>
+          <div>
+            <strong style="color: var(--text-main);">Deep Learning:</strong> PyTorch 2.12+ (8 Custom Architectures)
+          </div>
+          <div>
+            <strong style="color: var(--text-main);">Explainability:</strong> SHAP 0.54+, TreeSHAP, Permutation Importance
+          </div>
+        </div>
+      </div>
+
+      <!-- Regulatory Disclaimer Box -->
+      <div class="card" style="margin-top: 1.5rem; border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05);">
+        <h3 class="card-title" style="color: #fbbf24; margin-bottom: 0.75rem;">
+          Mandatory Medical & Regulatory Disclaimer
+        </h3>
+        <p style="font-size: 0.85rem; color: #fde68a; line-height: 1.6;">
+          DiaTrust-NX is a machine learning research prototype engineered strictly for academic, scientific, and experimental evaluation purposes. It has not been cleared or approved by the US FDA, EMA, or any regulatory medical authority. Predictions reflect statistical risk estimations and must not replace professional clinical evaluation, medical consultation, or certified laboratory testing (such as Fasting Plasma Glucose, Oral Glucose Tolerance Test, or Glycated Hemoglobin HbA1c assays).
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Application Footer -->
+  <footer class="app-footer">
+    <div>DiaTrust-NX Research System • Version 2.0.0 • Production AI/ML Engineering</div>
+    <div style="margin-top: 0.4rem;">
+      Trained on official <a href="https://archive.ics.uci.edu/dataset/529/early+stage+diabetes+risk+prediction+dataset" target="_blank">UCI 529</a> & <a href="https://archive.ics.uci.edu/dataset/891/cdc+diabetes+health+indicators" target="_blank">UCI 891</a> Datasets • Zero Data Leakage Protocol
+    </div>
+  </footer>
+
+  <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,23 @@
+{
+  "name": "diatrust-nx-dashboard",
+  "version": "2.0.0",
+  "description": "DiaTrust-NX Advanced Diabetes Risk Prediction & Clinical Research Dashboard",
+  "main": "frontend/js/app.js",
+  "scripts": {
+    "start": "python predict.py --serve",
+    "dev": "python predict.py --serve --port 8000",
+    "test": "python -m pytest tests/ -v"
+  },
+  "keywords": [
+    "diabetes",
+    "healthcare",
+    "machine-learning",
+    "pytorch",
+    "fastapi",
+    "explainable-ai",
+    "shap"
+  ],
+  "author": "DiaTrust-NX Research Team",
+  "license": "MIT"
+}
+

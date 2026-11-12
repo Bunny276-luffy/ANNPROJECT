@@ -333,6 +333,65 @@ def create_app() -> FastAPI:
     def metadata():
         return engine.metadata
 
+    @app.get("/api/models")
+    def get_models_info():
+        return {
+            "early_stage": {
+                "dataset": "UCI Early Stage Diabetes Risk Prediction (529)",
+                "selected_model": engine.metadata.get("early_stage", {}).get("selected_model", "Logistic Regression"),
+                "version": "2.0.0",
+                "decision_threshold": engine.metadata.get("early_stage", {}).get("decision_threshold", 0.1682),
+                "input_features": engine.metadata.get("early_stage", {}).get("input_features", []),
+                "metrics": engine.metadata.get("early_stage", {}).get("test_metrics", {}),
+                "calibration": "Platt Scaling (Sigmoid)"
+            },
+            "cdc": {
+                "dataset": "UCI CDC Diabetes Health Indicators (891)",
+                "selected_model": engine.metadata.get("cdc", {}).get("selected_model", "CatBoost"),
+                "version": "2.0.0",
+                "decision_threshold": engine.metadata.get("cdc", {}).get("decision_threshold", 0.5136),
+                "input_features": engine.metadata.get("cdc", {}).get("input_features", []),
+                "metrics": engine.metadata.get("cdc", {}).get("test_metrics", {}),
+                "calibration": "Inverse-Frequency Loss Weighting"
+            }
+        }
+
+    @app.get("/api/reports")
+    def get_all_reports():
+        ann_path = Path(REPORTS_DIR) / "DIATRUST_NX_ANN_COMPARISON.csv"
+        comp_path = Path(REPORTS_DIR) / "DIATRUST_NX_FINAL_DATASET_COMPARISON.csv"
+        es_fi_path = Path(REPORTS_DIR) / "early_stage_feature_importance.csv"
+        cdc_fi_path = Path(REPORTS_DIR) / "cdc_feature_importance.csv"
+        
+        return {
+            "dataset_comparison": pd.read_csv(comp_path).to_dict(orient="records") if comp_path.exists() else [],
+            "ann_comparison": pd.read_csv(ann_path).to_dict(orient="records") if ann_path.exists() else [],
+            "early_stage_features": pd.read_csv(es_fi_path).to_dict(orient="records") if es_fi_path.exists() else [],
+            "cdc_features": pd.read_csv(cdc_fi_path).to_dict(orient="records") if cdc_fi_path.exists() else []
+        }
+
+    @app.get("/api/model-performance")
+    def get_model_performance():
+        es_p = Path(REPORTS_DIR) / "early_stage_all_model_experiments.csv"
+        cdc_p = Path(REPORTS_DIR) / "cdc_all_model_experiments.csv"
+        ann_p = Path(REPORTS_DIR) / "DIATRUST_NX_ANN_COMPARISON.csv"
+
+        return {
+            "early_stage": pd.read_csv(es_p).to_dict(orient="records") if es_p.exists() else [],
+            "cdc": pd.read_csv(cdc_p).to_dict(orient="records") if cdc_p.exists() else [],
+            "ann_architectures": pd.read_csv(ann_p).to_dict(orient="records") if ann_p.exists() else [],
+            "baseline_comparison": {
+                "early_stage": {
+                    "previous_baseline": {"model": "CatBoost", "test_acc": "92.78% (leaked) / 86.87% (grouped)", "roc_auc": "0.9327", "recall": "89.80%"},
+                    "diatrust_nx": {"model": "Logistic Regression", "test_acc": "96.55%", "roc_auc": "0.9927", "recall": "94.44%", "specificity": "100.0%"}
+                },
+                "cdc": {
+                    "previous_baseline": {"model": "Balanced CatBoost", "test_acc": "81.49%", "recall": "58.18%", "roc_auc": "0.8273"},
+                    "diatrust_nx": {"model": "Balanced CatBoost", "test_acc": "73.06%", "recall": "78.70%", "roc_auc": "0.8336", "recall_gain": "+20.52%"}
+                }
+            }
+        }
+
     @app.post("/predict/early-stage", response_model=PredictionResponse)
     @app.post("/api/predict/early-stage", response_model=PredictionResponse)
     def predict_early_stage(payload: EarlyStageInput):

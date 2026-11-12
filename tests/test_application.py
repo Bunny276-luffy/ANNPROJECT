@@ -30,6 +30,9 @@ def test_app_routes_registered(app_and_routes):
         "/api/health",
         "/metadata",
         "/api/metadata",
+        "/api/models",
+        "/api/reports",
+        "/api/model-performance",
         "/predict/early-stage",
         "/api/predict/early-stage",
         "/predict/cdc",
@@ -66,6 +69,35 @@ def test_metadata_endpoint(app_and_routes):
     assert data["cdc"]["selected_model"] == "CatBoost"
     assert "input_features" in data["early_stage"]
     assert "decision_threshold" in data["cdc"]
+
+
+def test_models_endpoint(app_and_routes):
+    _, routes = app_and_routes
+    models = routes["/api/models"]()
+    assert "early_stage" in models
+    assert "cdc" in models
+    assert models["early_stage"]["selected_model"] == "Logistic Regression"
+    assert models["cdc"]["selected_model"] == "CatBoost"
+    assert len(models["early_stage"]["input_features"]) == 16
+    assert len(models["cdc"]["input_features"]) == 21
+
+
+def test_all_reports_endpoint(app_and_routes):
+    _, routes = app_and_routes
+    reports = routes["/api/reports"]()
+    assert "dataset_comparison" in reports
+    assert "ann_comparison" in reports
+    assert "early_stage_features" in reports
+    assert "cdc_features" in reports
+
+
+def test_model_performance_endpoint(app_and_routes):
+    _, routes = app_and_routes
+    perf = routes["/api/model-performance"]()
+    assert "early_stage" in perf
+    assert "cdc" in perf
+    assert "ann_architectures" in perf
+    assert "baseline_comparison" in perf
 
 
 def test_demo_samples_endpoint(app_and_routes):

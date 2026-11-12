@@ -30,6 +30,33 @@ export const DiaTrustAPI = {
   },
 
   /**
+   * Fetch models info
+   */
+  async fetchModels() {
+    const res = await fetch(`${API_BASE}/api/models`);
+    if (!res.ok) throw new Error("Failed to load models list");
+    return await res.json();
+  },
+
+  /**
+   * Fetch all aggregated experiment reports
+   */
+  async fetchAllReports() {
+    const res = await fetch(`${API_BASE}/api/reports`);
+    if (!res.ok) throw new Error("Failed to load reports");
+    return await res.json();
+  },
+
+  /**
+   * Fetch comprehensive model performance comparison
+   */
+  async fetchModelPerformance() {
+    const res = await fetch(`${API_BASE}/api/model-performance`);
+    if (!res.ok) throw new Error("Failed to load model performance");
+    return await res.json();
+  },
+
+  /**
    * Fetch demo patient samples for 1-click form prefill
    */
   async fetchDemoSamples() {

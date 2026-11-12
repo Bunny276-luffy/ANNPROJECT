@@ -245,3 +245,15 @@ def test_frontend_serving(app_and_routes):
     # Should be FileResponse serving frontend/index.html
     assert Path(res_index.path).name == "index.html"
     assert Path(res_index.path).exists()
+
+
+def test_head_methods_supported(app_and_routes):
+    app, _ = app_and_routes
+    # Verify that HEAD is in methods for / and /health
+    routes_methods = {r.path: r.methods for r in app.routes if hasattr(r, "methods")}
+    assert "/" in routes_methods
+    assert "HEAD" in routes_methods["/"]
+    assert "/health" in routes_methods
+    assert "HEAD" in routes_methods["/health"]
+    assert "/api/health" in routes_methods
+    assert "HEAD" in routes_methods["/api/health"]

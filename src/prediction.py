@@ -169,31 +169,32 @@ class DiaTrustPredictionEngine:
         else:
             conf_cat = "Ambiguous / High Uncertainty"
 
-        # Clinically enriched factor attributions
+        # Model-derived linear feature attribution (logit contributions: c_j = beta_j * x_j)
         contributions = []
-        if data.polyuria == "Yes":
-            contributions.append({"factor": "Polyuria (Frequent Urination)", "status": "Present", "impact": "Major Risk Driver", "polarity": "positive"})
-        if data.polydipsia == "Yes":
-            contributions.append({"factor": "Polydipsia (Excessive Thirst)", "status": "Present", "impact": "Major Risk Driver", "polarity": "positive"})
-        if data.sudden_weight_loss == "Yes":
-            contributions.append({"factor": "Sudden Weight Loss", "status": "Present", "impact": "Elevates Risk", "polarity": "positive"})
-        if data.polyuria == "Yes" and data.polydipsia == "Yes" and data.sudden_weight_loss == "Yes":
-            contributions.append({"factor": "Classic Diabetic Symptom Triad", "status": "Positive", "impact": "Severe Risk Multiplier", "polarity": "positive"})
-        if data.polyuria == "No" and data.polydipsia == "No":
-            contributions.append({"factor": "Absence of Osmotic Symptoms", "status": "Absent", "impact": "Strong Protective Factor", "polarity": "negative"})
-        if data.weakness == "Yes":
-            contributions.append({"factor": "Generalized Weakness/Fatigue", "status": "Present", "impact": "Elevates Risk", "polarity": "positive"})
-        if data.visual_blurring == "Yes":
-            contributions.append({"factor": "Visual Blurring (Osmotic Lens Swelling)", "status": "Present", "impact": "Elevates Risk", "polarity": "positive"})
-        if data.genital_thrush == "Yes":
-            contributions.append({"factor": "Genital Thrush (Candidiasis)", "status": "Present", "impact": "Elevates Risk", "polarity": "positive"})
-        if data.delayed_healing == "Yes":
-            contributions.append({"factor": "Delayed Wound Healing", "status": "Present", "impact": "Elevates Risk", "polarity": "positive"})
-        if data.age >= 45:
-            contributions.append({"factor": f"Age {data.age} (>= 45)", "status": "Present", "impact": "Elevates Baseline Risk", "polarity": "positive"})
+        try:
+            weights = model.coef_[0]
+            x_row = X_trans[0]
+            feature_names = preprocessor.get_feature_names_out()
+            raw_contribs = weights * x_row
+            ranked_idx = np.argsort(np.abs(raw_contribs))[::-1]
+            for idx in ranked_idx[:5]:
+                val = float(raw_contribs[idx])
+                if abs(val) > 1e-4:
+                    feat_clean = feature_names[idx].replace("_", " ").title()
+                    polarity = "positive" if val > 0 else "negative"
+                    impact = f"{'Increases Risk' if val > 0 else 'Protective Factor'} ({val:+.2f} log-odds)"
+                    contributions.append({
+                        "factor": feat_clean,
+                        "status": "Computed",
+                        "impact": impact,
+                        "polarity": polarity,
+                        "contribution_value": round(val, 4)
+                    })
+        except Exception:
+            pass
 
         if not contributions:
-            contributions.append({"factor": "Non-specific Asymptomatic Profile", "status": "Normal", "impact": "Protective Baseline", "polarity": "negative"})
+            contributions.append({"factor": "Baseline Profile", "status": "Normal", "impact": "Baseline Risk", "polarity": "negative"})
 
         return PredictionResponse(
             project="DiaTrust-NX",
@@ -236,37 +237,33 @@ class DiaTrustPredictionEngine:
         else:
             conf_cat = "Ambiguous / High Uncertainty"
 
-        # Clinically enriched factor attributions
+        # Model-derived native TreeSHAP instance-level attribution
         contributions = []
-        if data.HighBP == 1:
-            contributions.append({"factor": "Diagnosed Hypertension (High BP)", "impact": "Major Cardiometabolic Risk", "polarity": "positive"})
-        else:
-            contributions.append({"factor": "Normotensive (No High BP)", "impact": "Protective Factor", "polarity": "negative"})
+        try:
+            from catboost import Pool
+            feature_names = preprocessor.get_feature_names_out()
+            pool = Pool(X_trans, feature_names=feature_names)
+            shap_vals = model.get_feature_importance(pool, type="ShapValues")[0]
+            contribs = shap_vals[:-1]  # exclude expected value bias
+            ranked_idx = np.argsort(np.abs(contribs))[::-1]
+            for idx in ranked_idx[:5]:
+                val = float(contribs[idx])
+                if abs(val) > 1e-4:
+                    feat_clean = feature_names[idx].replace("_", " ").title()
+                    polarity = "positive" if val > 0 else "negative"
+                    impact = f"{'Increases Risk' if val > 0 else 'Protective Factor'} ({val:+.2f} SHAP)"
+                    contributions.append({
+                        "factor": feat_clean,
+                        "status": "Computed SHAP",
+                        "impact": impact,
+                        "polarity": polarity,
+                        "shap_value": round(val, 4)
+                    })
+        except Exception:
+            pass
 
-        if data.HighChol == 1:
-            contributions.append({"factor": "High Cholesterol", "impact": "Dyslipidemia Risk", "polarity": "positive"})
-        
-        if data.BMI >= 30.0:
-            contributions.append({"factor": f"Obese BMI ({data.BMI:.1f} kg/m²)", "impact": "Insulin Resistance Driver", "polarity": "positive"})
-        elif data.BMI < 25.0:
-            contributions.append({"factor": f"Normal BMI ({data.BMI:.1f} kg/m²)", "impact": "Protective Factor", "polarity": "negative"})
-
-        if data.GenHlth >= 3:
-            rating_map = {3: "Good", 4: "Fair", 5: "Poor"}
-            contributions.append({"factor": f"Suboptimal Health Status ({rating_map.get(data.GenHlth, 'Suboptimal')})", "impact": "Elevates Risk", "polarity": "positive"})
-        else:
-            contributions.append({"factor": "Excellent / Very Good Health Rating", "impact": "Protective Factor", "polarity": "negative"})
-
-        if data.Age >= 8:
-            contributions.append({"factor": f"Age Category {data.Age} (Cohort >= 55)", "impact": "Elevated Demographic Incidence", "polarity": "positive"})
-
-        if data.PhysActivity == 1:
-            contributions.append({"factor": "Active Physical Exercise Routine", "impact": "Protective Factor", "polarity": "negative"})
-        else:
-            contributions.append({"factor": "Physical Inactivity", "impact": "Elevates Risk", "polarity": "positive"})
-
-        if data.HeartDiseaseorAttack == 1:
-            contributions.append({"factor": "History of Coronary Heart Disease or MI", "impact": "Severe Vascular Risk", "polarity": "positive"})
+        if not contributions:
+            contributions.append({"factor": "Population Baseline Profile", "status": "Normal", "impact": "Baseline Risk", "polarity": "negative"})
 
         return PredictionResponse(
             project="DiaTrust-NX",
@@ -316,8 +313,8 @@ def create_app() -> FastAPI:
         app.mount("/static", StaticFiles(directory=str(frontend_path)), name="static")
 
     # API Endpoints
-    @app.get("/health")
-    @app.get("/api/health")
+    @app.api_route("/health", methods=["GET", "HEAD"])
+    @app.api_route("/api/health", methods=["GET", "HEAD"])
     def health():
         return {
             "status": "healthy",
@@ -501,7 +498,7 @@ def create_app() -> FastAPI:
             return []
         return [f.name for f in plots_dir.glob("*.png")]
 
-    @app.get("/")
+    @app.api_route("/", methods=["GET", "HEAD"])
     def serve_index():
         index_file = Path("frontend") / "index.html"
         if index_file.exists():

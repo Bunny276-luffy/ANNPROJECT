@@ -233,7 +233,7 @@ function setupFormHandlers() {
         };
 
         const result = await DiaTrustAPI.predictEarlyStage(payload);
-        renderPredictionResult(result);
+        renderPredictionResult(result, payload);
         navigateTo("results");
       } catch (err) {
         alert("Prediction Error: " + err.message);
@@ -280,7 +280,7 @@ function setupFormHandlers() {
         };
 
         const result = await DiaTrustAPI.predictCDC(payload);
-        renderPredictionResult(result);
+        renderPredictionResult(result, payload);
         navigateTo("results");
       } catch (err) {
         alert("Prediction Error: " + err.message);
@@ -295,7 +295,7 @@ function setupFormHandlers() {
 // -------------------------------------------------------------
 // Render Prediction Result
 // -------------------------------------------------------------
-function renderPredictionResult(result) {
+function renderPredictionResult(result, payload = null) {
   state.lastPrediction = result;
 
   const pct = Math.round(result.risk_probability * 100);
@@ -358,6 +358,18 @@ function renderPredictionResult(result) {
       `;
       factorList.appendChild(li);
     });
+  }
+
+  // 6. Input Profile Summary
+  const inputSummaryEl = document.getElementById("res-input-summary");
+  if (inputSummaryEl && payload) {
+    inputSummaryEl.innerHTML = "";
+    for (const [k, v] of Object.entries(payload)) {
+      const span = document.createElement("span");
+      span.style.cssText = "font-size: 0.75rem; background: var(--bg-input); border: 1px solid var(--border-color); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); color: var(--text-secondary);";
+      span.innerHTML = `<strong style="color: var(--text-main);">${k.replace('_', ' ')}:</strong> ${v}`;
+      inputSummaryEl.appendChild(span);
+    }
   }
 }
 
